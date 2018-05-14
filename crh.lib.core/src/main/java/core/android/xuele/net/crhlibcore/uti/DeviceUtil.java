@@ -70,8 +70,7 @@ public class DeviceUtil {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (context.getPackageManager().checkPermission(Manifest.permission.READ_PHONE_STATE,
                     context.getPackageName()) == PackageManager.PERMISSION_GRANTED) {
-                imei = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE))
-                        .getDeviceId();
+                imei = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
                 Log.d("info", ">>>>>>>>>>" + imei);
             } else {
                 Log.e("test", "no permission");
