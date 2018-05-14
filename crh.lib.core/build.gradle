@@ -6,13 +6,13 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion "27.0.3"
 
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 27
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
 
@@ -31,7 +31,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:27.0.2'
     compile 'com.squareup.okhttp3:okhttp:3.9.1'
     compile 'com.github.bumptech.glide:okhttp3-integration:1.5.0@aar'
     compile 'com.alibaba:fastjson:1.2.21'
