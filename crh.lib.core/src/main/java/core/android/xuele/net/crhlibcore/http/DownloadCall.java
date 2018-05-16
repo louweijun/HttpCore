@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import core.android.xuele.net.crhlibcore.http.callback.ApiProgressCallback;
+import core.android.xuele.net.crhlibcore.http.callback.ApiProgressDoCallback;
 import core.android.xuele.net.crhlibcore.http.callback.ReqCallBack;
 import core.android.xuele.net.crhlibcore.http.callback.ReqCallBackV2;
 import okhttp3.Request;
@@ -61,6 +62,9 @@ class DownloadCall extends OKHttpCall<File> {
         File file = saveFile(rawResponse, this.savePath);
         if (file == null) {
             throw new NullPointerException("File returned null");
+        }
+        if (callback instanceof ApiProgressDoCallback) {
+            ((ApiProgressDoCallback<File>) callback).onSuccessDoInBackground(this);
         }
         HttpUtils.log("DOWNLOAD_FINISH----> " + file.getPath());
         return new HttpResponse<>(rawResponse, code, null, null, headers, file);
