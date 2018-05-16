@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.webkit.URLUtil;
 
+import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import core.android.xuele.net.crhlibcore.http.callback.ApiCallback;
 import core.android.xuele.net.crhlibcore.http.converter.Converter;
 import core.android.xuele.net.crhlibcore.http.converter.StringConverter;
 import core.android.xuele.net.crhlibcore.http.interceptor.ConnectionCheckInterceptor;
@@ -96,6 +98,20 @@ public class ApiManager {
     }
 
 
+    /**
+     * 将DownloadCall于fragment或者activity的生命周期绑定
+     *
+     * @param url            下载地址
+     * @param savePath       保存的路径
+     * @param renameByUrl    是否根据url解析出文件名，如果为true则使用url解析出的文件名，会覆盖savePath
+     * @param callback       回调
+     * @return XLCall<File>
+     */
+    public Call<File> downloadFile(String url, final String savePath, final boolean renameByUrl, final ApiCallback<File> callback) {
+        Call<File> downloadCall = new DownloadCall(this, url, savePath, renameByUrl);
+        downloadCall.enqueue(callback);
+        return downloadCall;
+    }
 
     public void runOnUiThread(Runnable r) {
         handler.post(r);
