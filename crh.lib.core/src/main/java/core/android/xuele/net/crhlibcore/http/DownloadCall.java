@@ -64,7 +64,7 @@ class DownloadCall extends OKHttpCall<File> {
             throw new NullPointerException("File returned null");
         }
         if (callback instanceof ApiProgressDoCallback) {
-            ((ApiProgressDoCallback<File>) callback).onSuccessDoInBackground(this);
+            ((ApiProgressDoCallback<File>) callback).onSuccessDoInBackground(this, file);
         }
         HttpUtils.log("DOWNLOAD_FINISH----> " + file.getPath());
         return new HttpResponse<>(rawResponse, code, null, null, headers, file);

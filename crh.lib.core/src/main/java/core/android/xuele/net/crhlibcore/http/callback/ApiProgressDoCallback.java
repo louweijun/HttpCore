@@ -1,5 +1,7 @@
 package core.android.xuele.net.crhlibcore.http.callback;
 
+import java.io.File;
+
 import core.android.xuele.net.crhlibcore.http.Call;
 
 /**
@@ -8,5 +10,5 @@ import core.android.xuele.net.crhlibcore.http.Call;
 
 public interface ApiProgressDoCallback<T> extends ApiProgressCallback<T> {
 
-    void onSuccessDoInBackground(Call<T> call);
+    void onSuccessDoInBackground(Call<T> call, File file);
 }
