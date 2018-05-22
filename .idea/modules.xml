@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://D:/CRH-fromwork/HttpCore/HttpCore.iml" filepath="D:/CRH-fromwork/HttpCore/HttpCore.iml" />
-      <module fileurl="file://D:/CRH-fromwork/HttpCore/crh.lib.core/crh.lib.core.iml" filepath="D:/CRH-fromwork/HttpCore/crh.lib.core/crh.lib.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HttpCore.iml" filepath="$PROJECT_DIR$/HttpCore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crh.lib.core/crh.lib.core.iml" filepath="$PROJECT_DIR$/crh.lib.core/crh.lib.core.iml" />
     </modules>
   </component>
 </project>

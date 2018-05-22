@@ -2,7 +2,6 @@ package core.android.xuele.net.crhlibcore.http;
 
 import android.text.TextUtils;
 
-import com.alibaba.fastjson.JSON;
 
 import core.android.xuele.net.crhlibcore.http.callback.ReqCallBack;
 import core.android.xuele.net.crhlibcore.http.callback.ReqCallBackV2;
@@ -10,6 +9,7 @@ import core.android.xuele.net.crhlibcore.http.callback.ReqUploadCallBack;
 import core.android.xuele.net.crhlibcore.http.callback.ApiCallback;
 import core.android.xuele.net.crhlibcore.http.callback.ApiProgressCallback;
 import core.android.xuele.net.crhlibcore.http.exception.ApiNetworkException;
+import core.android.xuele.net.crhlibcore.uti.JsonUtil;
 
 
 /**
@@ -143,7 +143,7 @@ class ApiCallV2<T> extends OKHttpCall<T> {
             return null;
         }
         try {
-            return JSON.parseObject(json, clazz);
+            return JsonUtil.jsonToObject(json, clazz);
         } catch (Exception e) {
             e.printStackTrace();
         }

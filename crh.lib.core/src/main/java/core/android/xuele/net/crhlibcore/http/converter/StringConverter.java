@@ -1,6 +1,7 @@
 package core.android.xuele.net.crhlibcore.http.converter;
 
-import com.alibaba.fastjson.JSON;
+
+import core.android.xuele.net.crhlibcore.uti.JsonUtil;
 
 /**
  * Convert object to String or JSON String
@@ -27,7 +28,7 @@ public class StringConverter implements Converter<Object, String> {
             return "";
         }
         try {
-            return JSON.toJSONString(object);
+            return JsonUtil.objectToJson(object);
         } catch (Exception e) {
             e.printStackTrace();
         }
