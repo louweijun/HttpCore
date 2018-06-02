@@ -9,10 +9,19 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.security.GeneralSecurityException;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import core.android.xuele.net.crhlibcore.uti.LogManager;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
+import okhttp3.internal.Util;
+import okhttp3.internal.platform.Platform;
 import okio.Buffer;
 import okio.BufferedSource;
 
@@ -127,6 +136,35 @@ public class HttpUtils {
         } catch (Exception e) {
             log(e);
             return "";
+        }
+    }
+
+    public static X509TrustManager systemDefaultTrustManager() {
+        return new X509TrustManager() {
+
+            @Override
+            public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+
+            }
+
+            @Override
+            public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+
+            }
+
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new java.security.cert.X509Certificate[]{};
+            }
+        };
+    }
+
+    public static SSLSocketFactory systemDefaultSslSocketFactory(X509TrustManager trustManager) {
+        try {
+            SSLContext e = Platform.get().getSSLContext();
+            e.init((KeyManager[]) null, new TrustManager[]{trustManager}, new java.security.SecureRandom());
+            return e.getSocketFactory();
+        } catch (GeneralSecurityException var3) {
+            throw Util.assertionError("No System TLS", var3);
         }
     }
 

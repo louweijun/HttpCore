@@ -8,10 +8,23 @@ import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 import core.android.xuele.net.crhlibcore.http.callback.ApiCallback;
 import core.android.xuele.net.crhlibcore.http.converter.Converter;
@@ -21,6 +34,9 @@ import core.android.xuele.net.crhlibcore.http.interceptor.HeaderInterceptor;
 import core.android.xuele.net.crhlibcore.http.interceptor.HttpLoggingInterceptor;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.internal.Util;
+import okhttp3.internal.platform.Platform;
+import okhttp3.internal.tls.CertificateChainCleaner;
 
 /**
  * Api统一管理类
@@ -37,18 +53,25 @@ public class ApiManager {
     ICommonParamProvider commonParamProvider;
     private HeaderInterceptor headerInterceptor;
 
-    private Handler handler =new Handler(Looper.getMainLooper());
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     private ApiManager() {
         headerInterceptor = new HeaderInterceptor();
 //        @formatter:off
+        X509TrustManager trustManager1 = HttpUtils.systemDefaultTrustManager();
         this.downloadClient = new OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .readTimeout(600, TimeUnit.SECONDS)
                 .writeTimeout(15, TimeUnit.SECONDS)
                 .addInterceptor(new ConnectionCheckInterceptor())
                 .addInterceptor(headerInterceptor)
-//                .dns(new HttpDns())
+                .sslSocketFactory(HttpUtils.systemDefaultSslSocketFactory(trustManager1), trustManager1)
+                .hostnameVerifier(new HostnameVerifier() {
+                    @Override
+                    public boolean verify(String hostname, SSLSession session) {
+                        return true;
+                    }
+                })
                 .build();
         this.okHttpClient = downloadClient.newBuilder()
                 .readTimeout(30, TimeUnit.SECONDS)
@@ -59,9 +82,26 @@ public class ApiManager {
         this.paramConverter = new StringConverter();
     }
 
+
     public static ApiManager ready() {
         return SingletonHolder.instance;
     }
+
+    private X509TrustManager systemDefaultTrustManager() {
+        try {
+            TrustManagerFactory e = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            e.init((KeyStore) null);
+            TrustManager[] trustManagers = e.getTrustManagers();
+            if (trustManagers.length == 1 && trustManagers[0] instanceof X509TrustManager) {
+                return (X509TrustManager) trustManagers[0];
+            } else {
+                throw new IllegalStateException("Unexpected default trust managers:" + Arrays.toString(trustManagers));
+            }
+        } catch (GeneralSecurityException var3) {
+            throw Util.assertionError("No System TLS", var3);
+        }
+    }
+
 
 
     public ApiManager baseUrl(String baseUrl) {
@@ -101,10 +141,10 @@ public class ApiManager {
     /**
      * 将DownloadCall于fragment或者activity的生命周期绑定
      *
-     * @param url            下载地址
-     * @param savePath       保存的路径
-     * @param renameByUrl    是否根据url解析出文件名，如果为true则使用url解析出的文件名，会覆盖savePath
-     * @param callback       回调
+     * @param url         下载地址
+     * @param savePath    保存的路径
+     * @param renameByUrl 是否根据url解析出文件名，如果为true则使用url解析出的文件名，会覆盖savePath
+     * @param callback    回调
      * @return XLCall<File>
      */
     public Call<File> downloadFile(String url, final String savePath, final boolean renameByUrl, final ApiCallback<File> callback) {
@@ -148,7 +188,6 @@ public class ApiManager {
             }
         });
     }
-
 
 
     private ApiMethod loadApiMethod(Method method) {

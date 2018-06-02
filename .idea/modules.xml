@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/HttpCore.iml" filepath="$PROJECT_DIR$/HttpCore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HttpCore.iml" filepath="$PROJECT_DIR$/HttpCore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crh.lib.core/crh.lib.core.iml" filepath="$PROJECT_DIR$/crh.lib.core/crh.lib.core.iml" />
       <module fileurl="file://$PROJECT_DIR$/crh.lib.core/crh.lib.core.iml" filepath="$PROJECT_DIR$/crh.lib.core/crh.lib.core.iml" />
     </modules>
   </component>
